@@ -6,6 +6,8 @@ abrir no navegador a seguinte url:
 
 http://localhost:8080
 
+Um detalhe que não cheguei a implementar, mas daria para fazer seria criar um Controller Advice para retorno de mensagens padronizadas de erro, quando ocorressem.
+
 Sobre os extras:
 
 Api de validação de CPFs está offline. Porém daria pra conectar com ela atráves do RestTemplate
