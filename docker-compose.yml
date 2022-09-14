@@ -1,0 +1,35 @@
+version: '3.3'
+
+services:
+
+  db:
+    image: mysql
+    container_name: assembleia-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: assembleia
+    restart: always
+    networks:
+      - workspace
+    expose:
+      - 3306
+
+  assembleia-api:
+    build:
+      dockerfile: Dockerfile
+    container_name: assembleia-api
+    restart: on-failure
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    networks:
+      - workspace
+    expose:
+      - 8080
+
+networks:
+  workspace:
+    driver: bridge

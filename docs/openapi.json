@@ -1,0 +1,415 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "API para resoluções de votos em assembleia",
+    "version": "1.0.0",
+    "title": "Assembleia API",
+    "contact": {
+      "name": "Dougllas Sousa",
+      "url": "https://cursodsousa.github.io",
+      "email": "dougllasfps@gmail.com"
+    },
+    "license": {
+      "name": "License of API",
+      "url": "API license URL"
+    }
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Pautas",
+      "description": "Pauta Controller"
+    },
+    {
+      "name": "Resultados",
+      "description": "Resultado Controller"
+    },
+    {
+      "name": "Votos",
+      "description": "Voto Controller"
+    }
+  ],
+  "paths": {
+    "/v1/pautas": {
+      "post": {
+        "tags": [
+          "Pautas"
+        ],
+        "summary": "Criar uma pauta",
+        "description": "Cria uma pauta que poderá ser colocada em sessão",
+        "operationId": "criarUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "resource",
+            "description": "resource",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Pauta"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Pauta criada com sucesso"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Erro na introdução dos dados"
+          }
+        }
+      }
+    },
+    "/v1/pautas/{id}/resultados": {
+      "get": {
+        "tags": [
+          "Resultados"
+        ],
+        "summary": "Obter resultado",
+        "description": "Dada uma pauta, retorna seu resultado",
+        "operationId": "obterResultadoUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da pauta",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultado gerado com sucesso",
+            "schema": {
+              "$ref": "#/definitions/Resultado"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Pauta não encontrada ou Resultado indisponível"
+          }
+        }
+      }
+    },
+    "/v1/pautas/{id}/sessao": {
+      "post": {
+        "tags": [
+          "Pautas"
+        ],
+        "summary": "Iniciar Sessão",
+        "description": "Inicia a sessão para uma pauta",
+        "operationId": "iniciarSessaoUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da pauta",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "sessao",
+            "description": "sessao",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NovaSessao"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sessão iniciada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Pauta não encontrada"
+          },
+          "409": {
+            "description": "Pauta já iniciada anteriomente"
+          }
+        }
+      }
+    },
+    "/v1/pautas/{id}/votos": {
+      "post": {
+        "tags": [
+          "Votos"
+        ],
+        "summary": "Registrar Voto",
+        "description": "Registra o voto de um associado para uma pauta",
+        "operationId": "registrarVotoUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id da pauta",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "in": "body",
+            "name": "votoRequest",
+            "description": "voto",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegistroVoto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "202": {
+            "description": "Voto registrado com sucesso"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Pauta inexistente"
+          },
+          "409": {
+            "description": "Voto já registrado anteriomente para esta pauta e associado"
+          },
+          "422": {
+            "description": "Pauta ainda fora de sessão"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "NovaSessao": {
+      "type": "object",
+      "properties": {
+        "minutos": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1,
+          "exclusiveMinimum": false
+        }
+      },
+      "title": "NovaSessao"
+    },
+    "Pauta": {
+      "type": "object",
+      "required": [
+        "descricao"
+      ],
+      "properties": {
+        "descricao": {
+          "type": "string"
+        }
+      },
+      "title": "Pauta"
+    },
+    "RegistroVoto": {
+      "type": "object",
+      "required": [
+        "cpf",
+        "opcao"
+      ],
+      "properties": {
+        "cpf": {
+          "type": "string"
+        },
+        "opcao": {
+          "type": "string",
+          "enum": [
+            "NAO",
+            "SIM"
+          ]
+        }
+      },
+      "title": "RegistroVoto"
+    },
+    "ResponseEntity": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "object"
+        },
+        "statusCode": {
+          "type": "string",
+          "enum": [
+            "ACCEPTED",
+            "ALREADY_REPORTED",
+            "BAD_GATEWAY",
+            "BAD_REQUEST",
+            "BANDWIDTH_LIMIT_EXCEEDED",
+            "CHECKPOINT",
+            "CONFLICT",
+            "CONTINUE",
+            "CREATED",
+            "DESTINATION_LOCKED",
+            "EXPECTATION_FAILED",
+            "FAILED_DEPENDENCY",
+            "FORBIDDEN",
+            "FOUND",
+            "GATEWAY_TIMEOUT",
+            "GONE",
+            "HTTP_VERSION_NOT_SUPPORTED",
+            "IM_USED",
+            "INSUFFICIENT_SPACE_ON_RESOURCE",
+            "INSUFFICIENT_STORAGE",
+            "INTERNAL_SERVER_ERROR",
+            "I_AM_A_TEAPOT",
+            "LENGTH_REQUIRED",
+            "LOCKED",
+            "LOOP_DETECTED",
+            "METHOD_FAILURE",
+            "METHOD_NOT_ALLOWED",
+            "MOVED_PERMANENTLY",
+            "MOVED_TEMPORARILY",
+            "MULTIPLE_CHOICES",
+            "MULTI_STATUS",
+            "NETWORK_AUTHENTICATION_REQUIRED",
+            "NON_AUTHORITATIVE_INFORMATION",
+            "NOT_ACCEPTABLE",
+            "NOT_EXTENDED",
+            "NOT_FOUND",
+            "NOT_IMPLEMENTED",
+            "NOT_MODIFIED",
+            "NO_CONTENT",
+            "OK",
+            "PARTIAL_CONTENT",
+            "PAYLOAD_TOO_LARGE",
+            "PAYMENT_REQUIRED",
+            "PERMANENT_REDIRECT",
+            "PRECONDITION_FAILED",
+            "PRECONDITION_REQUIRED",
+            "PROCESSING",
+            "PROXY_AUTHENTICATION_REQUIRED",
+            "REQUESTED_RANGE_NOT_SATISFIABLE",
+            "REQUEST_ENTITY_TOO_LARGE",
+            "REQUEST_HEADER_FIELDS_TOO_LARGE",
+            "REQUEST_TIMEOUT",
+            "REQUEST_URI_TOO_LONG",
+            "RESET_CONTENT",
+            "SEE_OTHER",
+            "SERVICE_UNAVAILABLE",
+            "SWITCHING_PROTOCOLS",
+            "TEMPORARY_REDIRECT",
+            "TOO_EARLY",
+            "TOO_MANY_REQUESTS",
+            "UNAUTHORIZED",
+            "UNAVAILABLE_FOR_LEGAL_REASONS",
+            "UNPROCESSABLE_ENTITY",
+            "UNSUPPORTED_MEDIA_TYPE",
+            "UPGRADE_REQUIRED",
+            "URI_TOO_LONG",
+            "USE_PROXY",
+            "VARIANT_ALSO_NEGOTIATES"
+          ]
+        },
+        "statusCodeValue": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "ResponseEntity"
+    },
+    "Resultado": {
+      "type": "object",
+      "properties": {
+        "abertura": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "encerramento": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "opcaoGanhadora": {
+          "type": "string",
+          "enum": [
+            "NAO",
+            "SIM"
+          ]
+        },
+        "pauta": {
+          "type": "string"
+        },
+        "quantiadeNao": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantidadeSim": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "totalVotos": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "Resultado"
+    }
+  }
+}
